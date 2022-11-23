@@ -9,28 +9,26 @@ import java.security.SecureRandom;
 public class Main {
 
     private static final int SLEEP_SECONDS = 540;
-
-    private static int smallestScreenWidth = Integer.MAX_VALUE;
+    private static int totalScreenWidth = 0;
     private static boolean isLastActionAdd = false;
 
     public static void main (String[] args){
-
         SecureRandom random = new SecureRandom();
-        getSmallestMonitorWidth();
+        getMonitorsTotalWidth();
 
         try {
             Robot robot = new Robot();
             int currentMouseX;
             int currentMouseY;
 
-            System.out.println(smallestScreenWidth);
+            System.out.println(totalScreenWidth);
 
             while (true) {
                 int randomSleepTime = random.nextInt(SLEEP_SECONDS * 1000);
                 currentMouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
                 currentMouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
 
-                if (currentMouseX >= smallestScreenWidth) {
+                if (currentMouseX >= totalScreenWidth) {
                     robot.mouseMove(currentMouseX - 1, currentMouseY);
                     isLastActionAdd = false;
                 } else if (currentMouseX <= 0) {
@@ -53,16 +51,14 @@ public class Main {
         }
     }
 
-    public static void getSmallestMonitorWidth() {
+    public static void getMonitorsTotalWidth() {
         GraphicsDevice gdList [] = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
         for (int i = 0; i < gdList.length; i++) {
             GraphicsDevice tempGD = gdList[i];
             int currentScreenWidth = tempGD.getDisplayMode().getWidth();
 
-            if (currentScreenWidth < smallestScreenWidth) {
-                smallestScreenWidth = currentScreenWidth;
-            }
+            totalScreenWidth = totalScreenWidth + currentScreenWidth;
         }
     }
 }
